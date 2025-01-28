@@ -4,7 +4,11 @@ import { Budget } from "../models/Budget";
 class BudgetController {
     static getAll = async (req : Request, res : Response) => {
         try {
-            const budgets = await Budget.findAll()
+            const budgets = await Budget.findAll({
+                order: [
+                    ['createdAt', 'DESC']
+                ]
+            })
             res.status(200).json(budgets)
         } catch (error) {
             res.status(500).json({message: error.message})
@@ -12,7 +16,6 @@ class BudgetController {
     }
 
     static create = async (req : Request, res : Response) => {
-        console.log(req.body)
         try {
             const budget = new Budget(req.body)
             await budget.save()
@@ -23,7 +26,16 @@ class BudgetController {
     }
 
     static getById = async (req : Request, res : Response) => {
-        console.log("desde get by id")
+        try {
+            const budget = await Budget.findOne({where: {id: req.params.id}})
+            if(!budget){
+                res.status(404).json({error: "Presupuesto no encontrado"})
+                return
+            }
+            res.status(200).json(budget)
+        } catch (error) {
+            res.status(500).json({message: error.message})
+        }
     }
 
     static updateById = async (req : Request, res : Response) => {
