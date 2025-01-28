@@ -9,6 +9,8 @@ class BudgetController {
                     ['createdAt', 'DESC']
                 ]
             })
+            //TODO: Implementar filtro de usuario autenticado
+
             res.status(200).json(budgets)
         } catch (error) {
             res.status(500).json({message: error.message})
@@ -19,7 +21,7 @@ class BudgetController {
         try {
             const budget = new Budget(req.body)
             await budget.save()
-            res.status(201).send("Presupuesto creado correctamente")
+            res.status(201).json("Presupuesto creado correctamente")
         } catch (error) {
             res.status(500).json({message: error.message})
         }
@@ -27,7 +29,8 @@ class BudgetController {
 
     static getById = async (req : Request, res : Response) => {
         try {
-            const budget = await Budget.findOne({where: {id: req.params.id}})
+            const {id} = req.params
+            const budget = await Budget.findByPk(id)
             if(!budget){
                 res.status(404).json({error: "Presupuesto no encontrado"})
                 return
@@ -39,7 +42,19 @@ class BudgetController {
     }
 
     static updateById = async (req : Request, res : Response) => {
-        console.log("desde update by id")
+        try {
+            const {id} = req.params
+            const budget = await Budget.findByPk(id)
+            if(!budget){
+                res.status(404).json({error: "Presupuesto no encontrado"})
+                return
+            }
+            budget.update(req.body)
+            await budget.save()
+            res.status(200).json("Presupuesto actualizado correctamente")
+        } catch (error) {
+            res.status(500).json({message: error.message})
+        }
     }
 
     static deleteById = async (req : Request, res : Response) => {
