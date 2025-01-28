@@ -28,29 +28,12 @@ class BudgetController {
     }
 
     static getById = async (req : Request, res : Response) => {
-        try {
-            const {id} = req.params
-            const budget = await Budget.findByPk(id)
-            if(!budget){
-                res.status(404).json({error: "Presupuesto no encontrado"})
-                return
-            }
-            res.status(200).json(budget)
-        } catch (error) {
-            res.status(500).json({message: error.message})
-        }
+        res.status(200).json(req.budget)
     }
 
     static updateById = async (req : Request, res : Response) => {
         try {
-            const {id} = req.params
-            const budget = await Budget.findByPk(id)
-            if(!budget){
-                res.status(404).json({error: "Presupuesto no encontrado"})
-                return
-            }
-            budget.update(req.body)
-            await budget.save()
+            await req.budget.update(req.body)
             res.status(200).json("Presupuesto actualizado correctamente")
         } catch (error) {
             res.status(500).json({message: error.message})
@@ -58,7 +41,12 @@ class BudgetController {
     }
 
     static deleteById = async (req : Request, res : Response) => {
-        console.log("desde delete by id")
+        try {
+            await req.budget.destroy()
+            res.status(200).json("Presupuesto eliminado correctamente")
+        } catch (error) {
+            res.status(500).json({message: error.message})
+        }
     }
 }
 
