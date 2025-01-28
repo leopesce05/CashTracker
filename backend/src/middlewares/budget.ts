@@ -1,6 +1,7 @@
 import { Response, Request, NextFunction } from 'express';
 import { param, body, validationResult } from "express-validator";
 import { Budget } from '../models/Budget';
+import { handleInputErrors } from './validation';
 
 declare global {
     namespace Express {
@@ -13,6 +14,7 @@ declare global {
 export const validateBudgetId = async (req: Request, res: Response, next: NextFunction) => {
 
     await param('budgetId')
+        .notEmpty().withMessage('El id es requerido')
         .isInt().withMessage('El id debe ser un número')
         .custom((value) => value > 0).withMessage('ID no valido').run(req)
 
@@ -39,3 +41,12 @@ export const validateBudgetExists = async (req: Request, res: Response, next: Ne
     }
 }
 
+export const validateBudgetInput = async (req: Request, res: Response, next: NextFunction) => {
+    await body('name')
+        .notEmpty().withMessage('El nombre es requerido').run(req)
+    await body('amount')
+        .isNumeric().withMessage('El campo amount debe ser numérico')
+        .custom((value) => value > 0).withMessage('El campo amount debe ser mayor a 0').run(req)
+
+    next()
+}
