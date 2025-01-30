@@ -18,6 +18,7 @@ export class Expense extends Model {
     })
     declare amount: number
 
+    //RELACION CON PRESUPUESTOS
     @ForeignKey(() => Budget)
     declare budgetId: number
 
