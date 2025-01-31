@@ -21,7 +21,6 @@ export class AuthEmail {
                     <a href="#">Confirmar cuenta</a>
                     <p>e ingresa el codigo: <b>${user.token}</b></p>`,
                 });
-            console.log(email)
         } catch (error) {
             console.log("Error al enviar email:", error);
         }

@@ -3,6 +3,7 @@ import { Response,Request } from 'express';
 import { User } from '../models/User';
 import { hashPassword,comparePassword } from '../utils/auth';
 import { generateToken } from '../utils/tokens';
+import { generateJWT } from '../utils/jwt';
 
 
 export class AuthController {
@@ -50,6 +51,31 @@ export class AuthController {
             return
         } catch (error) {
             res.status(500).json({error: 'Error al confirmar cuenta'})
+        }
+    }
+
+    static async login(req:Request, res:Response) {
+        try {
+            const {email, password} = req.body
+            const exists = await User.findOne({ where: { email} })
+            if (!exists) {
+                res.status(404).json({error: 'Usuario no encontrado'})
+                return
+            }
+            if (!exists.confirmed) {
+                res.status(403).json({error: 'Usuario no confirmado'})
+                return
+            }
+            const isPasswordValid = await comparePassword(password, exists.password)
+            if (!isPasswordValid) {
+                res.status(403).json({error: 'Contraseña incorrecta'})
+                return
+            }
+            const jwt = generateJWT({id: exists.id})
+            res.send(jwt)
+            return
+        } catch (error) {
+            res.status(500).json({error: 'Error al iniciar sesion'})
         }
     }
 }

@@ -2,6 +2,7 @@ import { AuthController } from './../controllers/AuthController';
 import {Router} from 'express';
 import {body} from 'express-validator';
 import { handleInputErrors } from '../middlewares/validation';
+import { limiter } from '../config/limiter';
 
 const router = Router();
 
@@ -20,6 +21,7 @@ router.post('/create-acount',
 )
 
 router.post('/confirm-account',
+    limiter,
     [
         body('token')
             .notEmpty().withMessage('El token es requerido')    
@@ -27,5 +29,17 @@ router.post('/confirm-account',
     ],
     handleInputErrors,
     AuthController.confirmAccount)
+
+router.post('/login',
+    limiter,
+    [
+        body('email')
+            .notEmpty().withMessage('El email es requerido')    
+            .isEmail().withMessage('El e-mail no es valido'),
+        body('password')
+            .notEmpty().withMessage('El password es obligatorio')    
+    ],
+    handleInputErrors,
+    AuthController.login)
 
 export default router;
