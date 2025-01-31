@@ -5,7 +5,7 @@ import { handleInputErrors } from '../middlewares/validation';
 import { limiter } from '../config/limiter';
 
 const router = Router();
-
+router.use(limiter)
 
 router.post('/create-acount',
     [
@@ -21,7 +21,6 @@ router.post('/create-acount',
 )
 
 router.post('/confirm-account',
-    limiter,
     [
         body('token')
             .notEmpty().withMessage('El token es requerido')    
@@ -31,7 +30,6 @@ router.post('/confirm-account',
     AuthController.confirmAccount)
 
 router.post('/login',
-    limiter,
     [
         body('email')
             .notEmpty().withMessage('El email es requerido')    
