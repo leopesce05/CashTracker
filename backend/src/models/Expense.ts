@@ -1,6 +1,7 @@
 import { Table, Column, Model, DataType, BelongsTo, ForeignKey } from 'sequelize-typescript'
 import { Budget } from './Budget'
 
+//MODELO DE GASTO
 @Table({
     tableName: 'expenses'
 })

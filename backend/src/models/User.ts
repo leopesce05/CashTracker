@@ -1,6 +1,7 @@
 import { Table, Column, Model, DataType, HasMany, AllowNull, Unique, Default } from 'sequelize-typescript'
 import { Budget } from './Budget'
 
+//MODELO DE USUARIO
 @Table({
     tableName: 'users'
 })

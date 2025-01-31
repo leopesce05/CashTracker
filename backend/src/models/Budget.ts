@@ -2,6 +2,7 @@ import { Table, Column, Model, DataType, HasMany, BelongsTo, ForeignKey } from '
 import { Expense } from './Expense'
 import { User } from './User'
 
+//MODELO DE PRESUPUESTo
 @Table({
     tableName: 'budgets'
 })
