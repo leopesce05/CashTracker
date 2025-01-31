@@ -12,38 +12,33 @@ declare global {
 
 export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
 
-    const bearer = req.headers.authorization;
-
-    if (!bearer) {
-        const error = new Error('No autorizado')
-        res.status(401).json({error: error.message})
-        return
-    }
-
-    const [,token] = bearer.split(' ');
-
-    if (!token) {
-        const error = new Error('No autorizado')
-        res.status(401).json({error: error.message})
-        return
-    }
-
-    const payload = verifyJWT(token)
-    if (!payload) {
-        const error = new Error('Token invalido')
-        res.status(401).json({error: error.message})
-        return
-    }
-
-    if (payload['id']) {
-        const user = await User.findByPk(payload['id'])
-        if(!user){
-            const error = new Error('Usuario no encontrado')
-            res.status(404).json({error: error.message})
+    try {
+        const {authorization} = req.headers
+        if (!authorization) {
+            res.status(403).json({error: 'Es necesario autorizacion'})
             return
         }
-        req.user = user
+        const token = authorization.split(' ')[1]
+        const validToken = verifyJWT(token)
+
+        if(!validToken) {
+            res.status(403).json({error: 'Token invalido'})
+            return
+        }
+        if (!validToken['id']) {
+            res.status(403).json({error: 'Token invalido'})
+            return
+        }
+        req.user = await User.findByPk(validToken['id'],{
+            attributes: ['id','name','email']
+        })
+        if (!req.user) {
+            res.status(404).json({error: 'Usuario no encontrado'})
+            return
+        }
         next()
+    } catch (error) {
+        res.status(500).json({error: 'Error al iniciar sesion'})
     }
 
 }

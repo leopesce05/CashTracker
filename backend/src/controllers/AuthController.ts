@@ -3,7 +3,7 @@ import { Response,Request } from 'express';
 import { User } from '../models/User';
 import { hashPassword,comparePassword } from '../utils/auth';
 import { generateToken } from '../utils/tokens';
-import { generateJWT } from '../utils/jwt';
+import { generateJWT, verifyJWT } from '../utils/jwt';
 
 
 export class AuthController {
@@ -77,5 +77,65 @@ export class AuthController {
         } catch (error) {
             res.status(500).json({error: 'Error al iniciar sesion'})
         }
+    }
+
+    static async forgotPassword(req:Request, res:Response) {
+        try {
+            const {email} = req.body
+            const exists = await User.findOne({ where: { email} })
+            if (!exists) {
+                res.status(404).json({error: 'Usuario no encontrado'})
+                return
+            }
+            const token = generateToken()
+            exists.token = token
+            await exists.save()
+
+            await AuthEmail.sendPasswordResetToken({
+                name: exists.name,
+                email: exists.email,
+                token: exists.token
+            })
+            res.status(200).json({message: 'Email enviado'})
+        } catch (error) {
+            res.status(500).json({error: 'Error al iniciar sesion'})
+        }
+    }
+
+    static async validateToken(req:Request, res:Response) {
+        try {
+            const {token} = req.body
+            const user = await User.findOne({ where: { token } })
+            if (!user) {
+                res.status(404).json({error: 'Token invalido'})
+                return
+            }
+            res.status(200).json({message: 'Token valido'})
+
+        } catch (error) {
+            res.status(500).json({error: 'Error al iniciar sesion'})
+        }
+    }
+
+    static async resetPasswordWithToken(req:Request, res:Response) {
+        try {
+            const {token} = req.params
+            const user = await User.findOne({ where: { token } })
+            if (!user) {
+                res.status(404).json({error: 'Token invalido'})
+                return
+            }
+            const {password} = req.body
+            user.password = await hashPassword(password)
+            user.token = null
+            await user.save()
+            res.status(200).send('Contraseña actualizada correctamente')
+            return
+        } catch (error) {
+            res.status(500).json({error: 'Error al cambiar contraseña'})
+        }
+    }
+
+    static async user(req:Request, res:Response) {
     }
 }
