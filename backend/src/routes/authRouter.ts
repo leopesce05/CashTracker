@@ -86,6 +86,17 @@ router.post('/update-password',
             .isLength({ min: 8 }).withMessage('La contraseña debe tener minimo 8 caracteres'),
     ],
     handleInputErrors,
-    AuthController.updateCurrentUserPassword)
+    AuthController.updateCurrentUserPassword
+)
+
+router.post('/check-password',
+    authenticate,
+    [
+        body('password')
+            .notEmpty().withMessage('Se debe ingresar la contraseña actual'),
+    ],
+    handleInputErrors,
+    AuthController.checkPassword
+)
 
 export default router;

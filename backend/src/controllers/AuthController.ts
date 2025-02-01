@@ -145,10 +145,7 @@ export class AuthController {
             const { password, currentPassword } = req.body
             const { id } = req.user
             const user = await User.findOne({ where: { id } })
-            if (!user) {
-                res.status(404).json({ error: 'Usuario no encontrado' })
-                return
-            }
+
             const validCurrentPassword = await comparePassword(currentPassword, user.password)
             if (!validCurrentPassword) {
                 res.status(401).json({ error: 'Contraseña actual incorrecta' })
@@ -161,6 +158,25 @@ export class AuthController {
             return
         } catch (error) {
             res.status(500).json({ error: 'Error al actualizar contraseña' })
+        }
+
+    }
+
+    static async checkPassword(req: Request, res: Response) {
+        try {
+            const { password } = req.body
+            const { id } = req.user
+            const user = await User.findOne({ where: { id } })
+
+            const validCurrentPassword = await comparePassword(password, user.password)
+            if (!validCurrentPassword) {
+                res.status(401).json({ error: 'Contraseña incorrecta' })
+                return
+            }
+            res.status(200).json({ message: 'Contraseña valida'})
+            return
+        } catch (error) {
+            res.status(500).json({ error: 'Error al verificar contraseña' })
         }
 
     }
