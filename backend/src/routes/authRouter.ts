@@ -8,7 +8,7 @@ import { authenticate } from '../middlewares/auth';
 const router = Router();
 router.use(limiter)
 
-router.post('/create-acount',
+router.post('/create-account',
     [
         body('name')
             .notEmpty().withMessage('El nombre es requerido'),

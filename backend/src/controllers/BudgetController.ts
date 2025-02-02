@@ -11,7 +11,6 @@ class BudgetController {
                     ['createdAt', 'DESC']
                 ]
             })
-            //TODO: Implementar filtro de usuario autenticado
 
             res.status(200).json(budgets)
         } catch (error) {

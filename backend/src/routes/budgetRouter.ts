@@ -3,7 +3,7 @@ import { body , param} from 'express-validator';
 
 import BudgetController from '../controllers/BudgetController';
 import { handleInputErrors } from '../middlewares/validation';
-import { validateBudgetExists, validateBudgetId, validateBudgetInput } from '../middlewares/budget';
+import { hasAccess, validateBudgetExists, validateBudgetId, validateBudgetInput } from '../middlewares/budget';
 import { ExpensesController } from '../controllers/ExpenseController';
 import { validateExpenseId,validateExpenseExists, validateExpenseInput } from '../middlewares/expense';
 import { authenticate } from '../middlewares/auth';
@@ -16,6 +16,8 @@ router.use(authenticate)
 //Middlewares
 router.param('budgetId', validateBudgetId)
 router.param('budgetId', validateBudgetExists)
+router.param('budgetId', hasAccess)
+
 
 router.param('expenseId', validateExpenseId)
 router.param('expenseId', validateExpenseExists)
