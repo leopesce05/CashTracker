@@ -6,8 +6,12 @@ import { handleInputErrors } from '../middlewares/validation';
 import { validateBudgetExists, validateBudgetId, validateBudgetInput } from '../middlewares/budget';
 import { ExpensesController } from '../controllers/ExpenseController';
 import { validateExpenseId,validateExpenseExists, validateExpenseInput } from '../middlewares/expense';
+import { authenticate } from '../middlewares/auth';
 
 const router = Router();
+
+//Autenticacion necesaria para todas las rutas
+router.use(authenticate)
 
 //Middlewares
 router.param('budgetId', validateBudgetId)
