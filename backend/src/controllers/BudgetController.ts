@@ -6,6 +6,7 @@ class BudgetController {
     static getAll = async (req : Request, res : Response) => {
         try {
             const budgets = await Budget.findAll({
+                where: {userId: req.user.id},
                 order: [
                     ['createdAt', 'DESC']
                 ]

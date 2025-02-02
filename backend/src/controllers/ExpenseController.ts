@@ -1,6 +1,5 @@
 import type { Request, Response } from 'express'
 import { Expense } from '../models/Expense';
-import { Budget } from '../models/Budget';
 
 export class ExpensesController {
 
