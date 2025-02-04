@@ -1,6 +1,6 @@
 import { AuthEmail } from './../emails/AuthEmail';
 import { Response, Request } from 'express';
-import { User } from '../models/User';
+import User from '../models/User';
 import { hashPassword, comparePassword } from '../utils/auth';
 import { generateToken } from '../utils/tokens';
 import { generateJWT, verifyJWT } from '../utils/jwt';

@@ -7,7 +7,7 @@ import { User } from './User'
     tableName: 'budgets'
 })
 
-export class Budget extends Model {
+export default class Budget extends Model {
     @Column({
         type: DataType.STRING(100),
         allowNull: false,

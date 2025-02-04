@@ -1,12 +1,12 @@
 import { Table, Column, Model, DataType, BelongsTo, ForeignKey } from 'sequelize-typescript'
-import { Budget } from './Budget'
+import Budget from './Budget'
 
 //MODELO DE GASTO
 @Table({
     tableName: 'expenses'
 })
 
-export class Expense extends Model {
+export default class Expense extends Model {
     @Column({
         type: DataType.STRING(100),
         allowNull: false,

@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express'
-import { Expense } from '../models/Expense';
+import Expense from '../models/Expense';
 
 export class ExpensesController {
 
