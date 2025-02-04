@@ -36,7 +36,7 @@ describe('BudgetController - GetAll', () => {
         expect(res.status).not.toBe(404);
     });
 
-    it('should retrieve 2 budgets for user with ID 1', async () => {
+    it('should retrieve 1 budgets for user with ID 2', async () => {
         const req = createRequest({
             method: 'GET',
             url: '/api/budgets',
@@ -52,7 +52,7 @@ describe('BudgetController - GetAll', () => {
         expect(res.status).not.toBe(404);
     });
 
-    it('should retrieve 2 budgets for user with ID 1', async () => {
+    it('should retrieve 0 budgets for user with ID 10', async () => {
         const req = createRequest({
             method: 'GET',
             url: '/api/budgets',
@@ -66,5 +66,23 @@ describe('BudgetController - GetAll', () => {
         expect(data).toHaveLength(0);
         expect(res.statusCode).toBe(200);
         expect(res.status).not.toBe(404);
+    });
+
+    it('should handle errors when fetching budgets', async () => {
+        const req = createRequest({
+            method: 'GET',
+            url: '/api/budgets',
+            user: { id: 10 },
+        });
+        const res = createResponse();
+
+        (Budget.findAll as jest.Mock).mockImplementation(async () => {
+            throw new Error('Some error');
+        });
+
+        await BudgetController.getAll(req, res);
+        
+        expect(res.statusCode).toBe(500);
+        expect(res._getJSONData()).toEqual({error: "Hubo un error"});
     });
 });

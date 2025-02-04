@@ -14,7 +14,7 @@ class BudgetController {
 
             res.status(200).json(budgets)
         } catch (error) {
-            res.status(500).json({message: error.message})
+            res.status(500).json({error: "Hubo un error"})
         }
     }
 
